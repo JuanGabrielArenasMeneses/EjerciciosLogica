@@ -3,8 +3,7 @@ package Ejercicios;
 import java.util.Random;
 
 public class Sudoku {
-    private static int jMovCounts=1;
-    private static int iMovCounts=1;
+    
     private static int moves=0;
     private static int flag=0;
     private static int[] box=new int[2];
@@ -14,61 +13,114 @@ public class Sudoku {
         
         zeros(board);
         printBoard(board);
-        choiceBox(box);
         while (flag==0) {
+            choiceBox(box);
             verified(ramdom(9,1));
             printBoard(board);
+            System.out.println(""+moves);
             if(moves>80){
                 flag=containsZeros(board);
             }
         }
-        
-
     }
     private static void verified(int ramdom) {
-        overBoard (board, box[0], box[1],ramdom(9,1));
-        overRow (board, box[0], box[1],ramdom(9,1));
-        overColumn (board, box[0], box[1],ramdom(9,1));
+        if (overBoard (board, box[0], box[1],ramdom)) {
+            moves+=1;
+        }
+    }
+    public static boolean overBoard (int[][] board, int iPosition, int jPosition, int n) {
+        int iMovCounts=1;
+        int jMovCounts=1;
+        int boxPosition=ramdom(9,1);
+        int[] toSaveElementPosition=new int[2];
+        toSaveElementPosition[0]=iPosition;
+        toSaveElementPosition[1]=jPosition;
+        switch (boxPosition) {
+            case 1:
+            toSaveElementPosition[0]+=0;
+            toSaveElementPosition[1]+=0;
+                break;
+            case 2:
+            toSaveElementPosition[0]+=0;
+            toSaveElementPosition[1]+=1;
+                break;
+            case 3:
+            toSaveElementPosition[0]+=0;
+            toSaveElementPosition[1]+=2;
+                break;
+            case 4:
+            toSaveElementPosition[0]+=1;
+            toSaveElementPosition[1]+=0;
+                break;
+            case 5:
+            toSaveElementPosition[0]+=1;
+            toSaveElementPosition[1]+=1;
+                break;
+            case 6:
+            toSaveElementPosition[0]+=1;
+            toSaveElementPosition[1]+=2;
+                break;
+            case 7:
+            toSaveElementPosition[0]+=2;
+            toSaveElementPosition[1]+=0;
+                break;
+            case 8:
+            toSaveElementPosition[0]+=2;
+            toSaveElementPosition[1]+=1;
+                break;
+            case 9:
+            toSaveElementPosition[0]+=2;
+            toSaveElementPosition[1]+=2;
+                break;
+                default:
+                break;
+        }
+        
+        if(!overRow (board, toSaveElementPosition[0],n)){
+            return false;
+        }
+        if(!overColumn (board, toSaveElementPosition[1],n)){
+            return false;
+        }
+        while (jMovCounts+ iMovCounts==6) {
+            if (jMovCounts==3 && iMovCounts<3) {
+                iPosition+=1;
+                jPosition=jPosition-2;
+                jMovCounts++;
+                if(board[iPosition][jPosition]==n){
+                    return false;
+                }
+            }
+            jPosition++;
+        }
+        board[toSaveElementPosition[0]][toSaveElementPosition[1]]=n;
+        return true;
+    }
+    public static boolean overRow (int[][] board, int iPosition, int n) {
+        for (int j = 0; j < board[0].length; j++) {
+            if(board[iPosition][j]==n){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean overColumn (int[][] board, int jPosition, int n) {
+        for (int i = 0; i < board.length; i++) {
+            if(board[i][jPosition]==n){
+                return false;
+            }
+        }
+        return true;
     }
     private static int containsZeros(int[][] board2) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if(board[i][j]==0){
-                    return 1;
+                    return 0;
                 }
             }
         }
-        return 0;
-    }
-    public static boolean overBoard (int[][] board, int iPosition, int jPosition, int n) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if(board[i][j]==n){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    public static boolean overRow (int[][] board, int iPosition, int jPosition, int n) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if(board[i][j]==n){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    public static boolean overColumn (int[][] board, int iPosition, int jPosition, int n) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if(board[i][j]==n){
-                    return false;
-                }
-            }
-        }
-        return true;
+        return 1;
     }
     public static int[][] zeros(int[][] board) {
         for (int i = 0; i < board.length; i++) {
@@ -85,6 +137,8 @@ public class Sudoku {
             }
             System.out.println("");
         }
+        System.out.println("");
+        System.out.println("");
     }
     public static int[] choiceBox(int[] box) {
         int n=ramdom(9,1);
